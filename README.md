@@ -1,8 +1,11 @@
 # GYMlherme
 
-![GYMlherme Demo](src/assets/200.gif)
+<p align="center">
+  <img src="src/assets/200.gif" alt="GYMlherme Demo" width="45%" />
+  <img src="src/assets/Gemini_Generated_Image_a1u8iia1u8iia1u8.png" alt="Academia Fictícia" width="45%" />
+</p>
 
-Sistema de controle de academia desenvolvido em **Java** com persistência de dados em banco de dados relacional (**PostgreSQL**).a
+Sistema de controle de academia desenvolvido em **Java** com persistência de dados em banco de dados relacional (**PostgreSQL**).
 
 ---
 
