@@ -1,3 +1,4 @@
+package src.main.model;
 public class ClientWorkoutExercise {
     private Integer id;
     private Integer exerciseId;

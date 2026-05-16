@@ -1,1 +1,0 @@
-import java.sql.*; public class TestDB { public static void main(String[] args) throws Exception { Connection c = new ConnectionFactory().getConnection(); c.createStatement().execute("UPDATE client SET is_active = true WHERE is_active IS NULL;"); System.out.println("Column updated!"); } }

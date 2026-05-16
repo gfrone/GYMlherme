@@ -1,3 +1,4 @@
+package src.main.model;
 public class WorkoutSplit {
     private Integer id;
     private Integer frequencyId;

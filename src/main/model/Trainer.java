@@ -1,3 +1,4 @@
+package src.main.model;
 public class Trainer {
     private Integer id;
     private String name;

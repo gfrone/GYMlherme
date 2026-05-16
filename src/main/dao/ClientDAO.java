@@ -1,3 +1,4 @@
+package src.main.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -5,6 +6,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import src.main.model.Client;
+import src.main.model.ClientPlan;
+import src.main.model.ClientWorkout;
+import src.main.model.ClientWorkoutExercise;
+import src.main.model.ClientWorkoutProgram;
+import src.main.model.Exercise;
+import src.main.model.LoadHistory;
+import src.main.model.Plan;
+import src.main.model.Trainer;
+import src.main.model.TrainingFrequency;
+import src.main.model.WorkoutExerciseTemplate;
+import src.main.model.WorkoutSession;
+import src.main.model.WorkoutSplit;
+import src.main.model.WorkoutTemplate;
 
 
 public class ClientDAO {

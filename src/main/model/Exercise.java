@@ -1,3 +1,4 @@
+package src.main.model;
 public class Exercise {
     private Integer id;
     private Integer exerciceNumber;

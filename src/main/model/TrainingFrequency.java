@@ -1,3 +1,4 @@
+package src.main.model;
 public class TrainingFrequency {
     private Integer id;
     private int daysPerWeek;

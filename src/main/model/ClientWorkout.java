@@ -1,3 +1,4 @@
+package src.main.model;
 public class ClientWorkout {
     private Integer id;
     private String clientCpf;

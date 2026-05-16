@@ -1,3 +1,4 @@
+package src;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -7,6 +8,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+
+import src.main.dao.ClientDAO;
+import src.main.model.Client;
+import src.main.model.ClientPlan;
+import src.main.model.ClientWorkout;
+import src.main.model.ClientWorkoutExercise;
+import src.main.model.ClientWorkoutProgram;
+import src.main.model.Exercise;
+import src.main.model.LoadHistory;
+import src.main.model.Plan;
+import src.main.model.Trainer;
+import src.main.model.TrainingFrequency;
+import src.main.model.WorkoutExerciseTemplate;
+import src.main.model.WorkoutSession;
+import src.main.model.WorkoutSplit;
+import src.main.model.WorkoutTemplate;
 
 public class Main {
 

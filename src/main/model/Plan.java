@@ -1,3 +1,4 @@
+package src.main.model;
 public class Plan {
     private Integer id;
     private String planName;

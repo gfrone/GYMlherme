@@ -1,3 +1,4 @@
+package src.main.model;
 public class WorkoutTemplate {
     private Integer id;
     private Integer splitId;

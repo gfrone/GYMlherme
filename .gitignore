@@ -1,3 +1,5 @@
 *.class
 *.sql
 .vscode/
+*.jar
+compilar.txt
