@@ -1,0 +1,82 @@
+GYMLHERME — Sistema de Gerenciamento de Academia
+==================================================
+
+Estrutura de Treino
+-------------------
+O treinamento foi modelado em camadas hierárquicas:
+
+1. TrainingFrequency — define quantos dias por semana o aluno treina (ex: 3x, 4x, 5x/semana).
+   Cada valor é único no banco (constraint UNIQUE em days_per_week).
+
+2. WorkoutSplit — uma divisão de treino associada a uma frequência (ex: para 3x/semana, os splits
+   "ABC", "Upper/Lower" ou "FullBody"). Splits podem ser padrão (criados pelo admin, client_cpf = NULL)
+   ou customizados (criados pelo próprio aluno, client_cpf preenchido). Esse campo nullable é o que
+   diferencia os dois tipos no banco, sem necessidade de tabela separada.
+
+3. WorkoutTemplate — os dias individuais dentro de um split (ex: Split ABC → Treino A, Treino B,
+   Treino C). Cada template pertence a um split e tem uma ordem (sort_order).
+
+4. WorkoutExerciseTemplate — os exercícios dentro de cada template, com séries, repetições mínimas
+   e máximas, carga sugerida e tempo de descanso.
+
+Estrutura por Aluno (cópia individual)
+---------------------------------------
+Quando um aluno escolhe um split, o sistema executa createWorkoutProgramFromSplit em uma única
+transação, que copia toda a hierarquia de templates e exercícios para tabelas específicas do aluno:
+
+  ClientWorkoutProgram → ClientWorkout → ClientWorkoutExercise
+
+Essa cópia é necessária por dois motivos: (1) permitir que o aluno evolua individualmente suas
+cargas sem alterar o template global, e (2) suportar splits customizados, que existem apenas para
+aquele aluno. Ao trocar de divisão, o programa anterior é desativado (is_active = false) e um
+novo é criado — o histórico de cargas é preservado pois LoadHistory é independente de qualquer
+programa, vinculada apenas ao par (client_cpf, exercise_id).
+
+Sessão de Treino e Progressão de Carga
+----------------------------------------
+WorkoutSession registra quando um aluno inicia e finaliza um treino específico (ClientWorkout),
+com timestamps de início e fim. Durante a sessão, o aluno vê a carga atual de cada exercício
+(seu PR, calculado como MAX(load_kg) em LoadHistory) e pode registrar um novo valor. O sistema
+avisa se aquele treino já foi realizado na semana corrente, mas não bloqueia.
+
+Planos e Controle de Acesso
+----------------------------
+Existem 3 planos: Básico, Normal e Premium, com dois flags booleanos:
+  - can_customize_workout: Normal e Premium podem criar splits próprios; Básico só usa defaults.
+  - include_trainer: apenas Premium inclui acompanhamento de personal trainer.
+
+O controle de acesso do aluno ao sistema é feito pela data do plano: getActivePlan filtra
+end_date >= CURRENT_DATE. Ao trocar de plano (upgradePlan), o plano anterior recebe
+end_date = CURRENT_DATE - 1 (ontem), evitando que dois planos sejam retornados como ativos
+no mesmo dia — problema que ocorreria se usássemos CURRENT_DATE, pois o filtro é >=. - teve bastante este problema
+
+Limitações Conhecidas
+---------------------
+- Disponibilidade de personal: não há verificação se o personal já está alocado para outro
+  aluno ou tem capacidade disponível. Qualquer aluno Premium pode escolher qualquer trainer.
+
+- Funcionalidades não implementadas ou incompletas:
+    * Admin não pode editar um template já criado — só criar ou deletar por completo.
+    * Não há renovação de plano: ao vencer, o aluno é bloqueado e precisa do admin para
+      vincular um novo plano. Não existe fluxo de renovação automática ou aviso de vencimento.
+    * O aluno não consegue visualizar o histórico completo de sessões de treino; vê apenas
+      a data da última vez que fez cada treino.
+    * Admin não consegue visualizar os programas de treino individuais de cada aluno.
+
+
+- Sem testes automatizados: testei tudo manualmente, logo é possível que haja erros que não tenha percebido.
+
+Notas e esclarecimentos:
+
+Fiz esta estrutura progressivamente até chegar a este ponto. Conversei com colegas e com LLMs sobre a estrutura do projeto.
+Fiz várias vezes até chegar nesta estrutura, que considero sólida, embora nao consegui fazer testes automatizados para
+comprovar que não haja falhas críticas que nao tenha percebido em testes empíricos.
+
+Tive bastante dificuldade com os codigos para buscas no SQL. 
+Utilizei bastante o auxilio do chatGPT para me ajudar a construir as Strings SQL e como buscar no banco de dados
+porque é a parte que tenho menos familiaridade e tenho conhecimento limitado. A forma mais proxima que cheguei à isso
+foi mexendo em CSV com dados tabulares.
+Também utilizei IA para corrigir bugs, em que tive que uma outra estrutura de dados chamada HashSet para verificar se um exercicio já existia ou não.
+Também, outro bug que utilizei esta ferramenta foi em getFrequenciesWithSplits, que buscavam splits de outros alunos para qualquer aluno, causando erros na seleção.
+E também variou outros que corrigi com a evolução do projeto.
+

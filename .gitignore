@@ -2,4 +2,5 @@
 *.sql
 .vscode/
 *.jar
+postgresql-42.7.4.jar
 compilar.txt
